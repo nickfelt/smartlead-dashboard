@@ -166,6 +166,24 @@ class SmartleadClient:
         resp.raise_for_status()
         return resp.json()
 
+    async def get_email_account_by_id(self, email_account_id: int, client_api_key: Optional[str] = None) -> dict[str, Any]:
+        c = self._with_key(client_api_key)
+        resp = await c._client.get(f"/email-accounts/{email_account_id}", params=c._params())
+        resp.raise_for_status()
+        return resp.json()
+
+    async def update_email_account(self, email_account_id: int, updates: dict[str, Any], client_api_key: Optional[str] = None) -> dict[str, Any]:
+        c = self._with_key(client_api_key)
+        resp = await c._client.post(f"/email-accounts/{email_account_id}", params=c._params(), json=updates)
+        resp.raise_for_status()
+        return resp.json()
+
+    async def delete_email_account(self, email_account_id: int, client_api_key: Optional[str] = None) -> dict[str, Any]:
+        c = self._with_key(client_api_key)
+        resp = await c._client.delete(f"/email-accounts/{email_account_id}", params=c._params())
+        resp.raise_for_status()
+        return resp.json()
+
     # ─── Master Inbox ─────────────────────────────────────────────────────────
 
     async def fetch_inbox_replies(self, offset: int = 0, limit: int = 50, client_id: Optional[int] = None, client_api_key: Optional[str] = None) -> dict[str, Any]:

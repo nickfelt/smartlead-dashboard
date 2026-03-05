@@ -270,6 +270,15 @@ class MockSmartleadClient:
     async def remove_email_account_from_campaign(self, campaign_id: int, email_account_id: int, client_api_key: Optional[str] = None) -> dict[str, Any]:
         return {"ok": True}
 
+    async def get_email_account_by_id(self, email_account_id: int, client_api_key: Optional[str] = None) -> dict[str, Any]:
+        return _mock_email_account(email_account_id)
+
+    async def update_email_account(self, email_account_id: int, updates: dict[str, Any], client_api_key: Optional[str] = None) -> dict[str, Any]:
+        return {"ok": True, "id": email_account_id, **updates}
+
+    async def delete_email_account(self, email_account_id: int, client_api_key: Optional[str] = None) -> dict[str, Any]:
+        return {"ok": True, "deleted": True, "id": email_account_id}
+
     async def update_email_account_warmup(self, email_account_id: int, warmup_settings: dict[str, Any], client_api_key: Optional[str] = None) -> dict[str, Any]:
         return {"ok": True, "id": email_account_id}
 

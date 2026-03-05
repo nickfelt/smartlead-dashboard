@@ -193,6 +193,28 @@ class CreateEmailAccountRequest(BaseModel):
     messages_per_day: int = 50
 
 
+class UpdateEmailAccountRequest(BaseModel):
+    from_name: Optional[str] = None
+    messages_per_day: Optional[int] = None
+    tags: Optional[list[str]] = None
+
+
+class UpdateWarmupRequest(BaseModel):
+    warmup_enabled: bool
+    warmup_limit: int = 30
+    reply_rate_percent: int = 30
+    warmup_increment: int = 3
+
+
+class SmartSenderOrderRequest(BaseModel):
+    domain: str
+    vendor_id: int
+    mailbox_count: int
+    first_name: str
+    last_name: str
+    pattern: str = "first.last"
+
+
 # ─── Inbox ───────────────────────────────────────────────────────────────────
 
 class InboxMessage(BaseModel):
