@@ -179,6 +179,53 @@ class MockSmartleadClient:
     async def delete_campaign(self, campaign_id: int, client_api_key: Optional[str] = None) -> dict[str, Any]:
         return {"ok": True, "deleted": True}
 
+    async def get_campaign_sequences(self, campaign_id: int, client_api_key: Optional[str] = None) -> list[dict[str, Any]]:
+        return [
+            {
+                "seq_number": 1,
+                "seq_delay_details": {"delay_in_days": 0},
+                "variants": [
+                    {
+                        "subject": "Quick question about {{company_name}}",
+                        "body": "Hi {{first_name}},\n\nI noticed {{company_name}} is growing fast — congrats!\n\nWe help companies like yours book more meetings through cold email. Would a quick 15-minute call make sense this week?\n\nBest,\n{{sender_name}}",
+                    }
+                ],
+            },
+            {
+                "seq_number": 2,
+                "seq_delay_details": {"delay_in_days": 3},
+                "variants": [
+                    {
+                        "subject": "Re: Quick question about {{company_name}}",
+                        "body": "Hey {{first_name}},\n\nJust bumping this up — we recently helped a company in {{city}} go from 2% to 8% reply rates in 60 days.\n\nWorth a quick chat?\n\n{{sender_name}}",
+                    },
+                    {
+                        "subject": "Different angle, {{first_name}}",
+                        "body": "Hi {{first_name}},\n\nMost {{title}}s I talk to are struggling with the same thing: getting replies from cold email.\n\nHappy to share what's working right now. 15 minutes?\n\n{{sender_name}}",
+                    },
+                ],
+            },
+            {
+                "seq_number": 3,
+                "seq_delay_details": {"delay_in_days": 7},
+                "variants": [
+                    {
+                        "subject": "Last try — {{first_name}}",
+                        "body": "{{first_name}},\n\nI'll keep this short — if cold email isn't a priority for {{company_name}} right now, no worries at all.\n\nIf it ever becomes one, feel free to reach back out.\n\n{{sender_name}}",
+                    }
+                ],
+            },
+        ]
+
+    async def update_campaign_schedule(self, campaign_id: int, schedule: dict[str, Any], client_api_key: Optional[str] = None) -> dict[str, Any]:
+        return {"ok": True, "id": campaign_id}
+
+    async def update_campaign_settings_full(self, campaign_id: int, settings: dict[str, Any], client_api_key: Optional[str] = None) -> dict[str, Any]:
+        return {"ok": True, "id": campaign_id}
+
+    async def bulk_action_leads(self, campaign_id: int, lead_ids: list[int], action: str, client_api_key: Optional[str] = None) -> dict[str, Any]:
+        return {"ok": True, "affected": len(lead_ids), "action": action}
+
     async def get_campaign_analytics(self, campaign_id: int, client_api_key: Optional[str] = None) -> dict[str, Any]:
         c = _mock_campaign(campaign_id)
         daily = [
