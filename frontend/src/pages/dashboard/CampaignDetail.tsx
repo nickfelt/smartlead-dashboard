@@ -5,7 +5,7 @@ export default function CampaignDetail() {
   const { id } = useParams<{ id: string }>()
 
   return (
-    <div className="p-8">
+    <div className="flex-1 overflow-y-auto p-8">
       <h1 className="text-2xl font-bold text-gray-900 mb-2">Campaign #{id}</h1>
 
       <div className="bg-white rounded-xl border border-gray-200 flex items-center justify-center h-64 mt-6">

@@ -2,7 +2,7 @@ import { Megaphone, Plus } from 'lucide-react'
 
 export default function Campaigns() {
   return (
-    <div className="p-8">
+    <div className="flex-1 overflow-y-auto p-8">
       <div className="flex items-center justify-between mb-8">
         <div>
           <h1 className="text-2xl font-bold text-gray-900">Campaigns</h1>

@@ -6,6 +6,7 @@ as SmartleadClient. Toggle with USE_MOCK=true in .env.
 import random
 from datetime import datetime, timedelta
 from typing import Any, Optional
+from copy import deepcopy
 
 
 def _random_date(days_back: int = 30) -> str:
@@ -252,6 +253,63 @@ class MockSmartleadClient:
 
     async def fetch_master_inbox_lead_by_id(self, lead_id: int, client_api_key: Optional[str] = None) -> dict[str, Any]:
         return _mock_lead(lead_id)
+
+    async def fetch_snoozed_messages(self, offset: int = 0, limit: int = 50, client_id: Optional[int] = None, client_api_key: Optional[str] = None) -> dict[str, Any]:
+        msgs = [dict(_mock_inbox_message(i), is_snoozed=True) for i in range(1, 4)]
+        return {"data": msgs, "total": 3, "offset": offset, "limit": limit}
+
+    async def fetch_important_marked_messages(self, offset: int = 0, limit: int = 50, client_id: Optional[int] = None, client_api_key: Optional[str] = None) -> dict[str, Any]:
+        msgs = [dict(_mock_inbox_message(i), is_important=True) for i in range(1, 5)]
+        return {"data": msgs, "total": 4, "offset": offset, "limit": limit}
+
+    async def fetch_archived_messages(self, offset: int = 0, limit: int = 50, client_id: Optional[int] = None, client_api_key: Optional[str] = None) -> dict[str, Any]:
+        msgs = [dict(_mock_inbox_message(i), is_archived=True) for i in range(1, 3)]
+        return {"data": msgs, "total": 2, "offset": offset, "limit": limit}
+
+    async def get_lead_thread(self, lead_id: int, campaign_id: int, client_api_key: Optional[str] = None) -> dict[str, Any]:
+        """Full conversation thread: sent emails + received replies."""
+        sent_bodies = [
+            "Hi {{first_name}},\n\nI noticed your work at {{company_name}} and wanted to reach out...",
+            "Hey, just following up on my last email. Would love to connect!",
+        ]
+        sent = [
+            dict(
+                _mock_inbox_message(i * 100 + lead_id),
+                id=i * 100 + lead_id,
+                lead_id=lead_id,
+                campaign_id=campaign_id,
+                body=sent_bodies[i % len(sent_bodies)],
+                message_type="sent",
+                is_read=True,
+                timestamp=(datetime.utcnow() - timedelta(days=3 - i)).isoformat(),
+            )
+            for i in range(2)
+        ]
+        received = [_mock_inbox_message(lead_id)]
+        received[0]["timestamp"] = (datetime.utcnow() - timedelta(hours=2)).isoformat()
+        combined = sorted(sent + received, key=lambda m: m["timestamp"])
+        return {"lead_id": lead_id, "messages": combined}
+
+    async def mark_important(self, email_id: int, is_important: bool, client_api_key: Optional[str] = None) -> dict[str, Any]:
+        return {"ok": True, "email_id": email_id, "is_important": is_important}
+
+    async def mark_archived(self, email_id: int, is_archived: bool, client_api_key: Optional[str] = None) -> dict[str, Any]:
+        return {"ok": True, "email_id": email_id, "is_archived": is_archived}
+
+    async def set_reminder(self, lead_id: int, remind_at: str, client_api_key: Optional[str] = None) -> dict[str, Any]:
+        return {"ok": True, "lead_id": lead_id, "remind_at": remind_at}
+
+    async def create_lead_note(self, lead_id: int, note: str, client_api_key: Optional[str] = None) -> dict[str, Any]:
+        return {"ok": True, "lead_id": lead_id, "note_id": random.randint(1000, 9999)}
+
+    async def create_lead_task(self, lead_id: int, task: str, due_date: Optional[str] = None, client_api_key: Optional[str] = None) -> dict[str, Any]:
+        return {"ok": True, "lead_id": lead_id, "task_id": random.randint(1000, 9999)}
+
+    async def block_domains(self, domains: list[str], client_api_key: Optional[str] = None) -> dict[str, Any]:
+        return {"ok": True, "blocked": domains}
+
+    async def forward_reply(self, email_id: int, forward_to: str, client_api_key: Optional[str] = None) -> dict[str, Any]:
+        return {"ok": True, "email_id": email_id, "forwarded_to": forward_to}
 
     # ─── Client Management ───────────────────────────────────────────────────
 

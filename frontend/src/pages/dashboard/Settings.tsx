@@ -169,7 +169,7 @@ export default function Settings() {
   const noneConfigured = !keysStatus.anthropic.configured && !keysStatus.openai.configured
 
   return (
-    <div className="p-8 max-w-2xl">
+    <div className="flex-1 overflow-y-auto p-8 max-w-2xl">
       <div className="mb-8">
         <h1 className="text-2xl font-bold text-gray-900">Settings</h1>
         <p className="text-gray-500 text-sm mt-1">Manage your account and subscription.</p>
