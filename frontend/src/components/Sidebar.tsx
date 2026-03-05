@@ -12,6 +12,7 @@ import {
   LogOut,
   ShieldCheck,
 } from 'lucide-react'
+// Megaphone kept for the Campaigns nav icon
 import { useAuth } from '../contexts/AuthContext'
 
 interface NavItem {
@@ -80,9 +81,9 @@ export default function Sidebar() {
       <div className="px-6 py-5 border-b border-gray-700">
         <div className="flex items-center gap-2">
           <div className="w-8 h-8 bg-brand-600 rounded-lg flex items-center justify-center">
-            <Megaphone size={16} className="text-white" />
+            <span className="text-white font-serif font-bold text-base leading-none">B</span>
           </div>
-          <span className="text-white font-bold text-lg">Felt Marketing</span>
+          <span className="text-white font-serif font-semibold text-xl tracking-tight">Bookd</span>
         </div>
       </div>
 

@@ -1,28 +1,12 @@
 import { useState, useEffect, useRef } from 'react'
 import { Link } from 'react-router-dom'
 import {
-  ChevronDown, Menu, X, Check, Star,
+  ChevronDown, Check, Star,
   Mail, BarChart2, Users, Zap, Shield, Clock,
-  ArrowRight, Play, Twitter, Linkedin, Instagram,
+  ArrowRight, Play, X,
   Plus, Minus,
 } from 'lucide-react'
-
-// ─── Scroll-reveal hook ───────────────────────────────────────────────────────
-function useScrollReveal<T extends HTMLElement>() {
-  const ref = useRef<T>(null)
-  const [visible, setVisible] = useState(false)
-  useEffect(() => {
-    const el = ref.current
-    if (!el) return
-    const obs = new IntersectionObserver(
-      ([entry]) => { if (entry.isIntersecting) { setVisible(true); obs.disconnect() } },
-      { threshold: 0.15 }
-    )
-    obs.observe(el)
-    return () => obs.disconnect()
-  }, [])
-  return { ref, visible }
-}
+import { useScrollReveal } from '../hooks/useScrollReveal'
 
 // ─── Data ─────────────────────────────────────────────────────────────────────
 const features = [
@@ -30,31 +14,37 @@ const features = [
     icon: <Mail size={24} />,
     title: 'Unified Inbox',
     desc: 'All your client replies in one intelligent inbox. Prioritise, label, and respond without switching tabs.',
+    link: '/solutions/agencies',
   },
   {
     icon: <BarChart2 size={24} />,
     title: 'Live Analytics',
     desc: 'Real-time open rates, click rates, and reply rates per campaign — segmented by sequence step.',
+    link: '/solutions/sales-teams',
   },
   {
     icon: <Zap size={24} />,
     title: 'AI Copy Engine',
     desc: 'Generate personalised sequences, A/B subject lines, and full rewrites in seconds using GPT-4o.',
+    link: '/solutions/founders',
   },
   {
     icon: <Users size={24} />,
     title: 'Client Portals',
     desc: 'White-label dashboards for each of your clients. They see their data; you keep full control.',
+    link: '/solutions/agencies',
   },
   {
     icon: <Shield size={24} />,
     title: 'Deliverability First',
     desc: 'Smart Senders provisioning, automated mailbox warmup, and domain health scoring built in.',
+    link: '/solutions/smart-senders',
   },
   {
     icon: <Clock size={24} />,
     title: 'Automated Scheduling',
     desc: 'Set send windows per timezone, pause on reply, and throttle to protect your sending reputation.',
+    link: '/solutions/sales-teams',
   },
 ]
 
@@ -83,7 +73,7 @@ const benefits = [
     body: 'No more juggling spreadsheets or context-switching between tools. Bookd gives each client their own branded portal while you run everything from a single admin dashboard.',
     stat: '4×',
     statLabel: 'more clients managed per operator',
-    img: 'benefit-clients',
+    link: '/solutions/agencies',
   },
   {
     badge: 'AI-Powered',
@@ -91,7 +81,7 @@ const benefits = [
     body: 'Our AI writer knows what converts in cold outreach. Feed it your ICP, product, and tone — and it outputs full sequences, subject variants, and follow-ups ready to launch.',
     stat: '63%',
     statLabel: 'average reply rate lift vs manual copy',
-    img: 'benefit-ai',
+    link: '/solutions/founders',
   },
   {
     badge: 'Built for Scale',
@@ -99,7 +89,7 @@ const benefits = [
     body: 'Automatic mailbox rotation, warmup scheduling, and real-time domain health scores mean your emails land in inboxes — even at 50,000 sends per day.',
     stat: '98%',
     statLabel: 'average inbox placement rate',
-    img: 'benefit-scale',
+    link: '/solutions/smart-senders',
   },
 ]
 
@@ -202,7 +192,7 @@ const faqs = [
     a: 'Absolutely. Every client gets their own white-labeled portal with their branding. They can view campaigns, analytics, and inbox replies — but they never see your agency settings or other clients.',
   },
   {
-    q: 'How does the AI writer work?',
+    q: "How does the AI writer work?",
     a: "Our AI writer is powered by GPT-4o and fine-tuned on high-performing cold email sequences. You provide your ICP, value proposition, and tone of voice — it outputs full multi-step sequences, A/B subject variants, and follow-up messages.",
   },
   {
@@ -239,18 +229,13 @@ function FaqItem({ q, a }: { q: string; a: string }) {
         className="w-full flex items-center justify-between py-5 text-left gap-4"
       >
         <span className="font-medium text-[#1A1A1A] text-base">{q}</span>
-        {open
-          ? <Minus size={18} className="flex-shrink-0 text-[#9A7E58]" />
-          : <Plus size={18} className="flex-shrink-0 text-[#9A7E58]" />}
+        {open ? <Minus size={18} className="flex-shrink-0 text-[#9A7E58]" /> : <Plus size={18} className="flex-shrink-0 text-[#9A7E58]" />}
       </button>
-      {open && (
-        <p className="pb-5 text-sm text-[#4A4A4A] leading-relaxed">{a}</p>
-      )}
+      {open && <p className="pb-5 text-sm text-[#4A4A4A] leading-relaxed">{a}</p>}
     </div>
   )
 }
 
-// Benefit card — alternating layout
 function BenefitCard({ b, idx }: { b: typeof benefits[0]; idx: number }) {
   const { ref, visible } = useScrollReveal<HTMLDivElement>()
   const reverse = idx % 2 === 1
@@ -261,14 +246,12 @@ function BenefitCard({ b, idx }: { b: typeof benefits[0]; idx: number }) {
         visible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
       } ${reverse ? 'md:flex-row-reverse' : ''}`}
     >
-      {/* Illustration placeholder */}
       <div className="flex-1 min-h-[280px] bg-gradient-to-br from-[#F5F0E8] to-[#E8DDCB] rounded-3xl flex items-center justify-center border border-[#D4C4A8]">
         <div className="text-center px-8">
           <div className="text-5xl font-serif font-bold text-[#9A7E58] opacity-30">{b.stat}</div>
           <div className="text-sm text-[#6B6B6B] mt-1">{b.statLabel}</div>
         </div>
       </div>
-      {/* Copy */}
       <div className="flex-1 space-y-4">
         <span className="inline-block px-3 py-1 rounded-full bg-[#9A7E58]/10 text-[#7D6440] text-xs font-semibold tracking-wide uppercase">
           {b.badge}
@@ -279,164 +262,90 @@ function BenefitCard({ b, idx }: { b: typeof benefits[0]; idx: number }) {
           <span className="font-serif text-4xl font-bold text-[#9A7E58]">{b.stat}</span>
           <span className="text-sm text-[#6B6B6B]">{b.statLabel}</span>
         </div>
+        <Link
+          to={b.link}
+          className="inline-flex items-center gap-1 text-sm font-medium text-[#9A7E58] hover:text-[#7D6440] transition-colors"
+        >
+          Learn more <ArrowRight size={14} />
+        </Link>
       </div>
     </div>
   )
 }
 
-// ─── Main component ───────────────────────────────────────────────────────────
+// ─── Demo Modal ───────────────────────────────────────────────────────────────
+function DemoModal({ onClose }: { onClose: () => void }) {
+  // Close on Escape
+  useEffect(() => {
+    const handler = (e: KeyboardEvent) => { if (e.key === 'Escape') onClose() }
+    document.addEventListener('keydown', handler)
+    return () => document.removeEventListener('keydown', handler)
+  }, [onClose])
+
+  return (
+    <div
+      className="fixed inset-0 z-[100] bg-black/70 flex items-center justify-center p-4 backdrop-blur-sm"
+      onClick={onClose}
+    >
+      <div
+        className="bg-white rounded-2xl overflow-hidden w-full max-w-3xl shadow-2xl"
+        onClick={(e) => e.stopPropagation()}
+      >
+        <div className="flex items-center justify-between px-5 py-3.5 border-b border-[#E8DDCB]">
+          <span className="font-semibold text-[#1A1A1A]">Bookd — 2-minute overview</span>
+          <button
+            onClick={onClose}
+            className="w-7 h-7 rounded-lg bg-[#F5F0E8] hover:bg-[#E8DDCB] flex items-center justify-center transition-colors"
+          >
+            <X size={14} className="text-[#4A4A4A]" />
+          </button>
+        </div>
+        <div className="aspect-video bg-[#1A1A1A] flex flex-col items-center justify-center">
+          <div className="w-16 h-16 rounded-full bg-white/10 flex items-center justify-center mb-4">
+            <Play size={28} fill="white" className="text-white ml-1" />
+          </div>
+          <p className="text-white/50 text-sm">Demo video coming soon</p>
+        </div>
+      </div>
+    </div>
+  )
+}
+
+// ─── Main ─────────────────────────────────────────────────────────────────────
 export default function Landing() {
-  const [menuOpen, setMenuOpen]     = useState(false)
-  const [solutionsOpen, setSolOpen] = useState(false)
-  const [annual, setAnnual]         = useState(false)
-  const [scrolled, setScrolled]     = useState(false)
-  const [activeTestimonial, setActiveTestimonial] = useState(0)
+  const [annual, setAnnual]                   = useState(false)
+  const [activeTestimonial, setTestimonial]   = useState(0)
+  const [demoOpen, setDemoOpen]               = useState(false)
+  const featuresRef = useRef<HTMLElement>(null)
 
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 20)
-    window.addEventListener('scroll', onScroll, { passive: true })
-    return () => window.removeEventListener('scroll', onScroll)
-  }, [])
-
-  // Auto-advance testimonials
-  useEffect(() => {
-    const t = setInterval(() => setActiveTestimonial(p => (p + 1) % testimonials.length), 5000)
+    const t = setInterval(() => setTestimonial((p) => (p + 1) % testimonials.length), 5000)
     return () => clearInterval(t)
   }, [])
 
-  const featuresReveal  = useScrollReveal<HTMLDivElement>()
-  const stepsReveal     = useScrollReveal<HTMLDivElement>()
-  const statsReveal     = useScrollReveal<HTMLDivElement>()
+  const scrollToFeatures = () => {
+    featuresRef.current?.scrollIntoView({ behavior: 'smooth' })
+  }
+
+  const featuresReveal    = useScrollReveal<HTMLDivElement>()
+  const stepsReveal       = useScrollReveal<HTMLDivElement>()
+  const statsReveal       = useScrollReveal<HTMLDivElement>()
   const testimonialReveal = useScrollReveal<HTMLDivElement>()
-  const pricingReveal   = useScrollReveal<HTMLDivElement>()
-  const faqReveal       = useScrollReveal<HTMLDivElement>()
-  const ctaReveal       = useScrollReveal<HTMLDivElement>()
+  const pricingReveal     = useScrollReveal<HTMLDivElement>()
+  const faqReveal         = useScrollReveal<HTMLDivElement>()
+  const ctaReveal         = useScrollReveal<HTMLDivElement>()
 
   return (
     <div className="bg-[#FAF7F2] text-[#1A1A1A] font-sans overflow-x-hidden">
 
-      {/* ── Navbar ─────────────────────────────────────────────────────────── */}
-      <header
-        className={`fixed top-0 inset-x-0 z-50 transition-all duration-300 ${
-          scrolled ? 'bg-white/90 backdrop-blur-md shadow-sm border-b border-[#E8DDCB]' : 'bg-transparent'
-        }`}
-      >
-        <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
-          {/* Logo */}
-          <Link to="/" className="flex items-center gap-2">
-            <div className="w-8 h-8 bg-[#9A7E58] rounded-lg flex items-center justify-center">
-              <span className="text-white font-serif font-bold text-base leading-none">B</span>
-            </div>
-            <span className={`font-serif font-semibold text-xl tracking-tight ${scrolled ? 'text-[#1A1A1A]' : 'text-white'}`}>
-              Bookd
-            </span>
-          </Link>
-
-          {/* Desktop nav */}
-          <nav className="hidden md:flex items-center gap-6">
-            {/* Solutions dropdown */}
-            <div className="relative">
-              <button
-                onClick={() => setSolOpen(!solutionsOpen)}
-                className={`flex items-center gap-1 text-sm font-medium transition-colors ${
-                  scrolled ? 'text-[#4A4A4A] hover:text-[#9A7E58]' : 'text-white/80 hover:text-white'
-                }`}
-              >
-                Solutions <ChevronDown size={14} />
-              </button>
-              {solutionsOpen && (
-                <div
-                  className="absolute top-8 left-0 bg-white rounded-xl shadow-lg border border-[#E8DDCB] p-2 w-52"
-                  onMouseLeave={() => setSolOpen(false)}
-                >
-                  {['For Agencies', 'For Sales Teams', 'For Founders', 'Smart Senders'].map(item => (
-                    <button
-                      key={item}
-                      className="w-full text-left px-3 py-2 rounded-lg text-sm text-[#4A4A4A] hover:bg-[#F5F0E8] hover:text-[#9A7E58] transition-colors"
-                    >
-                      {item}
-                    </button>
-                  ))}
-                </div>
-              )}
-            </div>
-            {['About', 'Resources', 'Pricing'].map(label => (
-              <a
-                key={label}
-                href={`#${label.toLowerCase()}`}
-                className={`text-sm font-medium transition-colors ${
-                  scrolled ? 'text-[#4A4A4A] hover:text-[#9A7E58]' : 'text-white/80 hover:text-white'
-                }`}
-              >
-                {label}
-              </a>
-            ))}
-          </nav>
-
-          {/* CTA buttons */}
-          <div className="hidden md:flex items-center gap-3">
-            <Link
-              to="/login"
-              className={`text-sm font-medium transition-colors ${
-                scrolled ? 'text-[#4A4A4A] hover:text-[#9A7E58]' : 'text-white/80 hover:text-white'
-              }`}
-            >
-              Sign in
-            </Link>
-            <Link
-              to="/signup"
-              className="px-4 py-2 rounded-full bg-[#9A7E58] hover:bg-[#7D6440] text-white text-sm font-semibold transition-colors"
-            >
-              Book a Call
-            </Link>
-          </div>
-
-          {/* Mobile hamburger */}
-          <button
-            className="md:hidden p-1"
-            onClick={() => setMenuOpen(!menuOpen)}
-          >
-            {menuOpen
-              ? <X size={22} className={scrolled ? 'text-[#1A1A1A]' : 'text-white'} />
-              : <Menu size={22} className={scrolled ? 'text-[#1A1A1A]' : 'text-white'} />}
-          </button>
-        </div>
-
-        {/* Mobile menu */}
-        {menuOpen && (
-          <div className="md:hidden bg-white border-t border-[#E8DDCB] px-6 py-4 space-y-3">
-            {['Solutions', 'About', 'Resources', 'Pricing'].map(label => (
-              <a
-                key={label}
-                href={`#${label.toLowerCase()}`}
-                onClick={() => setMenuOpen(false)}
-                className="block text-sm font-medium text-[#4A4A4A] py-1"
-              >
-                {label}
-              </a>
-            ))}
-            <div className="pt-2 flex flex-col gap-2">
-              <Link to="/login" className="text-sm font-medium text-[#4A4A4A] py-1">Sign in</Link>
-              <Link
-                to="/signup"
-                className="block text-center px-4 py-2 rounded-full bg-[#9A7E58] text-white text-sm font-semibold"
-              >
-                Book a Call
-              </Link>
-            </div>
-          </div>
-        )}
-      </header>
+      {demoOpen && <DemoModal onClose={() => setDemoOpen(false)} />}
 
       {/* ── Hero ───────────────────────────────────────────────────────────── */}
       <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
-        {/* Background gradient */}
         <div className="absolute inset-0 bg-gradient-to-br from-[#3E3018] via-[#7D6440] to-[#E8A04C]" />
-        {/* Overlay texture */}
         <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxnIGZpbGw9IiNmZmYiIGZpbGwtb3BhY2l0eT0iMC4wMyI+PHBhdGggZD0iTTM2IDM0djZoNnYtNmgtNnptMCAwdi02aC02djZoNnoiLz48L2c+PC9nPjwvc3ZnPg==')] opacity-40" />
 
         <div className="relative z-10 max-w-5xl mx-auto px-6 text-center">
-          {/* Badge */}
           <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/10 border border-white/20 text-white/90 text-sm mb-8 backdrop-blur-sm">
             <Zap size={14} fill="currentColor" />
             <span>AI-powered cold outreach for B2B agencies</span>
@@ -460,7 +369,10 @@ export default function Landing() {
               Start your free trial
               <ArrowRight size={16} />
             </Link>
-            <button className="flex items-center justify-center gap-2 px-8 py-4 rounded-full bg-white/10 hover:bg-white/20 border border-white/30 text-white font-semibold text-base transition-all backdrop-blur-sm">
+            <button
+              onClick={() => setDemoOpen(true)}
+              className="flex items-center justify-center gap-2 px-8 py-4 rounded-full bg-white/10 hover:bg-white/20 border border-white/30 text-white font-semibold text-base transition-all backdrop-blur-sm"
+            >
               <Play size={16} fill="white" />
               Watch demo (2 min)
             </button>
@@ -472,10 +384,13 @@ export default function Landing() {
         </div>
 
         {/* Scroll indicator */}
-        <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 text-white/40">
+        <button
+          onClick={scrollToFeatures}
+          className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 text-white/40 hover:text-white/70 transition-colors"
+        >
           <span className="text-xs tracking-widest uppercase">Scroll</span>
           <ChevronDown size={16} className="animate-bounce" />
-        </div>
+        </button>
       </section>
 
       {/* ── Social Proof Bar ───────────────────────────────────────────────── */}
@@ -485,7 +400,7 @@ export default function Landing() {
             Trusted by leading B2B agencies
           </p>
           <div className="flex flex-wrap items-center justify-center gap-x-12 gap-y-6">
-            {['Apex Demand Gen', 'Outbound Studio', 'LeadFlow Agency', 'Pipeline Co.', 'Catalyst Growth', 'Reply Labs'].map(name => (
+            {['Apex Demand Gen', 'Outbound Studio', 'LeadFlow Agency', 'Pipeline Co.', 'Catalyst Growth', 'Reply Labs'].map((name) => (
               <span key={name} className="text-base font-serif font-semibold text-[#C4AE8A] tracking-tight">
                 {name}
               </span>
@@ -495,7 +410,7 @@ export default function Landing() {
       </section>
 
       {/* ── Features ───────────────────────────────────────────────────────── */}
-      <section id="solutions" className="py-24 px-6">
+      <section id="features" ref={featuresRef} className="py-24 px-6">
         <div
           ref={featuresReveal.ref}
           className={`max-w-7xl mx-auto transition-all duration-700 ${
@@ -516,23 +431,27 @@ export default function Landing() {
 
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
             {features.map((f) => (
-              <div
+              <Link
                 key={f.title}
+                to={f.link}
                 className="group bg-white rounded-2xl border border-[#E8DDCB] p-6 hover:border-[#9A7E58] hover:shadow-md transition-all"
               >
                 <div className="w-11 h-11 bg-[#F5F0E8] rounded-xl flex items-center justify-center text-[#9A7E58] mb-4 group-hover:bg-[#9A7E58] group-hover:text-white transition-colors">
                   {f.icon}
                 </div>
                 <h3 className="font-semibold text-[#1A1A1A] mb-2">{f.title}</h3>
-                <p className="text-sm text-[#6B6B6B] leading-relaxed">{f.desc}</p>
-              </div>
+                <p className="text-sm text-[#6B6B6B] leading-relaxed mb-3">{f.desc}</p>
+                <span className="text-xs text-[#9A7E58] font-medium opacity-0 group-hover:opacity-100 transition-opacity flex items-center gap-1">
+                  Learn more <ArrowRight size={12} />
+                </span>
+              </Link>
             ))}
           </div>
         </div>
       </section>
 
       {/* ── How It Works ───────────────────────────────────────────────────── */}
-      <section className="bg-white py-24 px-6 border-y border-[#E8DDCB]">
+      <section id="how-it-works" className="bg-white py-24 px-6 border-y border-[#E8DDCB]">
         <div
           ref={stepsReveal.ref}
           className={`max-w-5xl mx-auto transition-all duration-700 ${
@@ -549,7 +468,6 @@ export default function Landing() {
           </div>
 
           <div className="grid md:grid-cols-3 gap-8 relative">
-            {/* Connector line */}
             <div className="hidden md:block absolute top-8 left-1/3 right-1/3 h-px bg-[#E8DDCB]" />
             {steps.map((s, i) => (
               <div key={i} className="relative text-center">
@@ -622,7 +540,6 @@ export default function Landing() {
             </h2>
           </div>
 
-          {/* Card */}
           <div className="bg-white rounded-3xl border border-[#E8DDCB] shadow-sm p-8 sm:p-10">
             <StarRating count={testimonials[activeTestimonial].rating} />
             <blockquote className="mt-4 font-serif text-xl sm:text-2xl text-[#1A1A1A] leading-relaxed">
@@ -639,14 +556,13 @@ export default function Landing() {
             </div>
           </div>
 
-          {/* Dots */}
           <div className="flex justify-center gap-2 mt-6">
             {testimonials.map((_, i) => (
               <button
                 key={i}
-                onClick={() => setActiveTestimonial(i)}
-                className={`w-2 h-2 rounded-full transition-all ${
-                  i === activeTestimonial ? 'bg-[#9A7E58] w-5' : 'bg-[#D4C4A8]'
+                onClick={() => setTestimonial(i)}
+                className={`h-2 rounded-full transition-all ${
+                  i === activeTestimonial ? 'bg-[#9A7E58] w-5' : 'bg-[#D4C4A8] w-2'
                 }`}
               />
             ))}
@@ -673,7 +589,6 @@ export default function Landing() {
               Start for free. No hidden fees. Cancel any time.
             </p>
 
-            {/* Toggle */}
             <div className="inline-flex items-center gap-3 bg-[#F5F0E8] rounded-full p-1">
               <button
                 onClick={() => setAnnual(false)}
@@ -721,25 +636,22 @@ export default function Landing() {
                 </div>
                 {annual && (
                   <div className={`text-xs mb-3 ${plan.highlighted ? 'text-[#E8C88A]' : 'text-[#9A7E58]'}`}>
-                    Billed ${annual ? plan.annualPrice * 12 : plan.monthlyPrice * 12}/year
+                    Billed ${(annual ? plan.annualPrice : plan.monthlyPrice) * 12}/year
                   </div>
                 )}
                 <p className={`text-sm mb-6 leading-relaxed ${plan.highlighted ? 'text-white/70' : 'text-[#6B6B6B]'}`}>
                   {plan.desc}
                 </p>
                 <ul className="space-y-2.5 mb-8 flex-1">
-                  {plan.features.map(f => (
+                  {plan.features.map((f) => (
                     <li key={f} className="flex items-start gap-2.5 text-sm">
-                      <Check
-                        size={15}
-                        className={`flex-shrink-0 mt-0.5 ${plan.highlighted ? 'text-[#E8C88A]' : 'text-[#9A7E58]'}`}
-                      />
+                      <Check size={15} className={`flex-shrink-0 mt-0.5 ${plan.highlighted ? 'text-[#E8C88A]' : 'text-[#9A7E58]'}`} />
                       <span className={plan.highlighted ? 'text-white/80' : 'text-[#4A4A4A]'}>{f}</span>
                     </li>
                   ))}
                 </ul>
                 <Link
-                  to={plan.cta === 'Book a call' ? '/signup' : '/signup'}
+                  to={plan.cta === 'Book a call' ? '/contact' : '/signup'}
                   className={`block text-center py-3 rounded-full text-sm font-semibold transition-colors ${
                     plan.highlighted
                       ? 'bg-[#9A7E58] hover:bg-[#7D6440] text-white'
@@ -754,13 +666,13 @@ export default function Landing() {
 
           <p className="text-center text-sm text-[#6B6B6B] mt-8">
             All plans include a 14-day free trial. Need custom volume?{' '}
-            <a href="#" className="text-[#9A7E58] font-medium hover:underline">Talk to sales</a>
+            <Link to="/contact" className="text-[#9A7E58] font-medium hover:underline">Talk to sales</Link>
           </p>
         </div>
       </section>
 
       {/* ── FAQ ────────────────────────────────────────────────────────────── */}
-      <section className="py-24 px-6 bg-[#FAF7F2]">
+      <section id="faq" className="py-24 px-6 bg-[#FAF7F2]">
         <div
           ref={faqReveal.ref}
           className={`max-w-3xl mx-auto transition-all duration-700 ${
@@ -804,11 +716,10 @@ export default function Landing() {
                 to="/signup"
                 className="flex items-center justify-center gap-2 px-8 py-4 rounded-full bg-[#9A7E58] hover:bg-[#B49870] text-white font-semibold text-base transition-all hover:scale-105"
               >
-                Start free trial
-                <ArrowRight size={16} />
+                Start free trial <ArrowRight size={16} />
               </Link>
               <Link
-                to="/signup"
+                to="/contact"
                 className="flex items-center justify-center gap-2 px-8 py-4 rounded-full bg-white/10 hover:bg-white/20 border border-white/30 text-white font-semibold text-base transition-all"
               >
                 Book a demo
@@ -819,76 +730,6 @@ export default function Landing() {
         </div>
       </section>
 
-      {/* ── Footer ─────────────────────────────────────────────────────────── */}
-      <footer className="bg-[#1A1A1A] text-white py-16 px-6">
-        <div className="max-w-7xl mx-auto">
-          <div className="grid sm:grid-cols-2 md:grid-cols-5 gap-10 mb-12">
-            {/* Brand col */}
-            <div className="md:col-span-2">
-              <div className="flex items-center gap-2 mb-4">
-                <div className="w-8 h-8 bg-[#9A7E58] rounded-lg flex items-center justify-center">
-                  <span className="text-white font-serif font-bold text-base leading-none">B</span>
-                </div>
-                <span className="font-serif font-semibold text-xl tracking-tight">Bookd</span>
-              </div>
-              <p className="text-sm text-white/50 leading-relaxed max-w-xs">
-                The all-in-one cold outreach platform for B2B agencies. AI-written sequences, warmed-up mailboxes, and white-label client portals.
-              </p>
-              <div className="flex items-center gap-3 mt-5">
-                {[Twitter, Linkedin, Instagram].map((Icon, i) => (
-                  <a
-                    key={i}
-                    href="#"
-                    className="w-8 h-8 rounded-lg bg-white/10 hover:bg-[#9A7E58] flex items-center justify-center transition-colors"
-                  >
-                    <Icon size={14} />
-                  </a>
-                ))}
-              </div>
-            </div>
-
-            {/* Link cols */}
-            {[
-              {
-                heading: 'Product',
-                links: ['Features', 'Pricing', 'Changelog', 'Roadmap'],
-              },
-              {
-                heading: 'Company',
-                links: ['About', 'Blog', 'Careers', 'Press'],
-              },
-              {
-                heading: 'Legal',
-                links: ['Privacy Policy', 'Terms of Service', 'Cookie Policy', 'GDPR'],
-              },
-            ].map((col) => (
-              <div key={col.heading}>
-                <h4 className="text-xs font-semibold uppercase tracking-widest text-white/40 mb-4">
-                  {col.heading}
-                </h4>
-                <ul className="space-y-2.5">
-                  {col.links.map(link => (
-                    <li key={link}>
-                      <a href="#" className="text-sm text-white/60 hover:text-white transition-colors">
-                        {link}
-                      </a>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            ))}
-          </div>
-
-          <div className="border-t border-white/10 pt-8 flex flex-col sm:flex-row items-center justify-between gap-4">
-            <p className="text-xs text-white/30">
-              © {new Date().getFullYear()} Bookd Inc. All rights reserved.
-            </p>
-            <p className="text-xs text-white/30">
-              Made with care for B2B agency operators.
-            </p>
-          </div>
-        </div>
-      </footer>
     </div>
   )
 }
