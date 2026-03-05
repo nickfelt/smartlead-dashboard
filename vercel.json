@@ -4,14 +4,15 @@
   "outputDirectory": "frontend/dist",
   "installCommand": "cd frontend && npm install",
   "functions": {
-    "api/**/*.py": {
-      "runtime": "python3.12"
+    "api/index.py": {
+      "runtime": "python3.12",
+      "maxDuration": 30
     }
   },
   "rewrites": [
     {
       "source": "/api/(.*)",
-      "destination": "/api/$1"
+      "destination": "/api/index.py"
     },
     {
       "source": "/(.*)",
@@ -22,8 +23,8 @@
     {
       "source": "/api/(.*)",
       "headers": [
-        { "key": "Access-Control-Allow-Origin", "value": "*" },
-        { "key": "Access-Control-Allow-Methods", "value": "GET,POST,PUT,DELETE,OPTIONS" },
+        { "key": "Access-Control-Allow-Origin", "value": "https://app.feltmarketing.com" },
+        { "key": "Access-Control-Allow-Methods", "value": "GET,POST,PUT,PATCH,DELETE,OPTIONS" },
         { "key": "Access-Control-Allow-Headers", "value": "Content-Type, Authorization" }
       ]
     }
