@@ -54,9 +54,9 @@ export default function MarketingFooter() {
                 <a
                   key={i}
                   href="#"
-                  className="w-8 h-8 rounded-lg bg-white/10 hover:bg-[#9A7E58] flex items-center justify-center transition-colors"
+                  className="w-11 h-11 rounded-lg bg-white/10 hover:bg-[#9A7E58] flex items-center justify-center transition-colors"
                 >
-                  <Icon size={14} />
+                  <Icon size={16} />
                 </a>
               ))}
             </div>
@@ -88,9 +88,9 @@ export default function MarketingFooter() {
           <p className="text-xs text-white/30">
             © {new Date().getFullYear()} Bookd Inc. All rights reserved.
           </p>
-          <div className="flex items-center gap-4">
+          <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
             {['Privacy Policy', 'Terms of Service', 'Cookie Policy'].map((label) => (
-              <a key={label} href="#" className="text-xs text-white/30 hover:text-white/60 transition-colors">
+              <a key={label} href="#" className="text-xs text-white/30 hover:text-white/60 transition-colors py-1">
                 {label}
               </a>
             ))}

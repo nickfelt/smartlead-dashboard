@@ -81,22 +81,22 @@ export default function SolutionTemplate({
           <span className="inline-block px-3 py-1 rounded-full bg-white/10 border border-white/20 text-white/80 text-xs font-semibold tracking-wide uppercase mb-5">
             {badge}
           </span>
-          <h1 className="font-serif text-4xl sm:text-5xl md:text-6xl font-bold text-white leading-[1.1] mb-5">
+          <h1 className="font-serif text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-white leading-[1.15] mb-5 whitespace-pre-line">
             {headline}
           </h1>
-          <p className="text-white/70 text-lg max-w-2xl mx-auto mb-8 leading-relaxed">
+          <p className="text-white/70 text-sm sm:text-base md:text-lg max-w-2xl mx-auto mb-8 leading-relaxed">
             {subheadline}
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Link
               to="/signup"
-              className="inline-flex items-center justify-center gap-2 px-7 py-3.5 rounded-full bg-[#9A7E58] hover:bg-[#7D6440] text-white font-semibold transition-all hover:scale-105"
+              className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-7 py-3.5 rounded-full bg-[#9A7E58] hover:bg-[#7D6440] text-white font-semibold transition-all hover:scale-105"
             >
               Start your free trial <ArrowRight size={16} />
             </Link>
             <Link
               to="/contact"
-              className="inline-flex items-center justify-center gap-2 px-7 py-3.5 rounded-full bg-white/10 hover:bg-white/20 border border-white/30 text-white font-semibold transition-all"
+              className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-7 py-3.5 rounded-full bg-white/10 hover:bg-white/20 border border-white/30 text-white font-semibold transition-all"
             >
               Book a demo
             </Link>
@@ -220,13 +220,13 @@ export default function SolutionTemplate({
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
                 <Link
                   to={ctaLink}
-                  className="inline-flex items-center justify-center gap-2 px-8 py-3.5 rounded-full bg-[#9A7E58] hover:bg-[#B49870] text-white font-semibold transition-all hover:scale-105"
+                  className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-8 py-3.5 rounded-full bg-[#9A7E58] hover:bg-[#B49870] text-white font-semibold transition-all hover:scale-105"
                 >
                   {ctaLabel} <ArrowRight size={16} />
                 </Link>
                 <Link
                   to="/contact"
-                  className="inline-flex items-center justify-center gap-2 px-8 py-3.5 rounded-full bg-white/10 hover:bg-white/20 border border-white/30 text-white font-semibold transition-all"
+                  className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-8 py-3.5 rounded-full bg-white/10 hover:bg-white/20 border border-white/30 text-white font-semibold transition-all"
                 >
                   Book a demo
                 </Link>

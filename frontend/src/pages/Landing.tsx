@@ -346,17 +346,17 @@ export default function Landing() {
         <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxnIGZpbGw9IiNmZmYiIGZpbGwtb3BhY2l0eT0iMC4wMyI+PHBhdGggZD0iTTM2IDM0djZoNnYtNmgtNnptMCAwdi02aC02djZoNnoiLz48L2c+PC9nPjwvc3ZnPg==')] opacity-40" />
 
         <div className="relative z-10 max-w-5xl mx-auto px-6 text-center">
-          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/10 border border-white/20 text-white/90 text-sm mb-8 backdrop-blur-sm">
-            <Zap size={14} fill="currentColor" />
+          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/10 border border-white/20 text-white/90 text-xs sm:text-sm mb-8 backdrop-blur-sm">
+            <Zap size={14} fill="currentColor" className="flex-shrink-0" />
             <span>AI-powered cold outreach for B2B agencies</span>
           </div>
 
-          <h1 className="font-serif text-5xl sm:text-6xl md:text-7xl font-bold text-white leading-[1.1] mb-6">
+          <h1 className="font-serif text-3xl sm:text-5xl md:text-6xl lg:text-7xl font-bold text-white leading-[1.15] mb-6">
             Close more deals.<br />
             <span className="text-[#E8C88A]">Send smarter email.</span>
           </h1>
 
-          <p className="text-white/70 text-lg sm:text-xl max-w-2xl mx-auto mb-10 leading-relaxed">
+          <p className="text-white/70 text-sm sm:text-base md:text-lg lg:text-xl max-w-2xl mx-auto mb-10 leading-relaxed">
             Bookd is the all-in-one cold outreach platform for B2B agencies — AI-written sequences,
             warmed-up mailboxes, white-label client portals, and real-time analytics in one place.
           </p>
@@ -364,14 +364,14 @@ export default function Landing() {
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Link
               to="/signup"
-              className="flex items-center justify-center gap-2 px-8 py-4 rounded-full bg-[#9A7E58] hover:bg-[#7D6440] text-white font-semibold text-base transition-all hover:scale-105 shadow-lg shadow-black/20"
+              className="w-full sm:w-auto flex items-center justify-center gap-2 px-8 py-4 rounded-full bg-[#9A7E58] hover:bg-[#7D6440] text-white font-semibold text-base transition-all hover:scale-105 shadow-lg shadow-black/20"
             >
               Start your free trial
               <ArrowRight size={16} />
             </Link>
             <button
               onClick={() => setDemoOpen(true)}
-              className="flex items-center justify-center gap-2 px-8 py-4 rounded-full bg-white/10 hover:bg-white/20 border border-white/30 text-white font-semibold text-base transition-all backdrop-blur-sm"
+              className="w-full sm:w-auto flex items-center justify-center gap-2 px-8 py-4 rounded-full bg-white/10 hover:bg-white/20 border border-white/30 text-white font-semibold text-base transition-all backdrop-blur-sm"
             >
               <Play size={16} fill="white" />
               Watch demo (2 min)
@@ -441,7 +441,7 @@ export default function Landing() {
                 </div>
                 <h3 className="font-semibold text-[#1A1A1A] mb-2">{f.title}</h3>
                 <p className="text-sm text-[#6B6B6B] leading-relaxed mb-3">{f.desc}</p>
-                <span className="text-xs text-[#9A7E58] font-medium opacity-0 group-hover:opacity-100 transition-opacity flex items-center gap-1">
+                <span className="text-xs text-[#9A7E58] font-medium flex items-center gap-1 mt-1">
                   Learn more <ArrowRight size={12} />
                 </span>
               </Link>
@@ -556,15 +556,18 @@ export default function Landing() {
             </div>
           </div>
 
-          <div className="flex justify-center gap-2 mt-6">
+          <div className="flex justify-center gap-1 mt-6">
             {testimonials.map((_, i) => (
               <button
                 key={i}
                 onClick={() => setTestimonial(i)}
-                className={`h-2 rounded-full transition-all ${
+                className="p-2 flex items-center justify-center"
+                aria-label={`Go to testimonial ${i + 1}`}
+              >
+                <span className={`block h-2 rounded-full transition-all ${
                   i === activeTestimonial ? 'bg-[#9A7E58] w-5' : 'bg-[#D4C4A8] w-2'
-                }`}
-              />
+                }`} />
+              </button>
             ))}
           </div>
         </div>
@@ -592,7 +595,7 @@ export default function Landing() {
             <div className="inline-flex items-center gap-3 bg-[#F5F0E8] rounded-full p-1">
               <button
                 onClick={() => setAnnual(false)}
-                className={`px-4 py-1.5 rounded-full text-sm font-medium transition-all ${
+                className={`px-4 py-2.5 rounded-full text-sm font-medium transition-all ${
                   !annual ? 'bg-white text-[#1A1A1A] shadow-sm' : 'text-[#6B6B6B]'
                 }`}
               >
@@ -600,7 +603,7 @@ export default function Landing() {
               </button>
               <button
                 onClick={() => setAnnual(true)}
-                className={`px-4 py-1.5 rounded-full text-sm font-medium transition-all ${
+                className={`px-4 py-2.5 rounded-full text-sm font-medium transition-all ${
                   annual ? 'bg-white text-[#1A1A1A] shadow-sm' : 'text-[#6B6B6B]'
                 }`}
               >
@@ -714,13 +717,13 @@ export default function Landing() {
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Link
                 to="/signup"
-                className="flex items-center justify-center gap-2 px-8 py-4 rounded-full bg-[#9A7E58] hover:bg-[#B49870] text-white font-semibold text-base transition-all hover:scale-105"
+                className="w-full sm:w-auto flex items-center justify-center gap-2 px-8 py-4 rounded-full bg-[#9A7E58] hover:bg-[#B49870] text-white font-semibold text-base transition-all hover:scale-105"
               >
                 Start free trial <ArrowRight size={16} />
               </Link>
               <Link
                 to="/contact"
-                className="flex items-center justify-center gap-2 px-8 py-4 rounded-full bg-white/10 hover:bg-white/20 border border-white/30 text-white font-semibold text-base transition-all"
+                className="w-full sm:w-auto flex items-center justify-center gap-2 px-8 py-4 rounded-full bg-white/10 hover:bg-white/20 border border-white/30 text-white font-semibold text-base transition-all"
               >
                 Book a demo
               </Link>

@@ -172,13 +172,13 @@ export default function About() {
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Link
                 to="/contact"
-                className="inline-flex items-center justify-center gap-2 px-7 py-3.5 rounded-full bg-[#9A7E58] hover:bg-[#7D6440] text-white font-semibold transition-colors"
+                className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-7 py-3.5 rounded-full bg-[#9A7E58] hover:bg-[#7D6440] text-white font-semibold transition-colors"
               >
                 Book a Call <ArrowRight size={16} />
               </Link>
               <Link
                 to="/signup"
-                className="inline-flex items-center justify-center gap-2 px-7 py-3.5 rounded-full border border-[#D4C4A8] hover:border-[#9A7E58] text-[#4A4A4A] hover:text-[#9A7E58] font-semibold transition-colors"
+                className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-7 py-3.5 rounded-full border border-[#D4C4A8] hover:border-[#9A7E58] text-[#4A4A4A] hover:text-[#9A7E58] font-semibold transition-colors"
               >
                 Start free trial
               </Link>

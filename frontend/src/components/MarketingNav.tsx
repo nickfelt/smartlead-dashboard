@@ -117,22 +117,22 @@ export default function MarketingNav() {
 
       {/* Mobile drawer */}
       {menuOpen && (
-        <div className="md:hidden bg-white border-t border-[#E8DDCB] px-6 py-4 space-y-1">
+        <div className="md:hidden bg-white border-t border-[#E8DDCB] px-6 py-4 space-y-1 max-h-[85vh] overflow-y-auto">
           {/* Solutions accordion */}
           <button
             onClick={() => setMobileSolOpen(!mobileSolOpen)}
-            className="w-full flex items-center justify-between py-2.5 text-sm font-medium text-[#4A4A4A]"
+            className="w-full flex items-center justify-between py-3 text-sm font-medium text-[#4A4A4A]"
           >
             Solutions
             <ChevronDown size={14} className={`transition-transform ${mobileSolOpen ? 'rotate-180' : ''}`} />
           </button>
           {mobileSolOpen && (
-            <div className="pl-4 space-y-1 pb-1">
+            <div className="pl-4 space-y-0.5 pb-1">
               {solutions.map((item) => (
                 <Link
                   key={item.to}
                   to={item.to}
-                  className="block py-1.5 text-sm text-[#6B6B6B] hover:text-[#9A7E58] transition-colors"
+                  className="block py-2.5 text-sm text-[#6B6B6B] hover:text-[#9A7E58] transition-colors"
                 >
                   {item.label}
                 </Link>
@@ -140,15 +140,15 @@ export default function MarketingNav() {
             </div>
           )}
 
-          <Link to="/about"     className="block py-2.5 text-sm font-medium text-[#4A4A4A]">About</Link>
-          <Link to="/resources" className="block py-2.5 text-sm font-medium text-[#4A4A4A]">Resources</Link>
-          <a    href="/#pricing" className="block py-2.5 text-sm font-medium text-[#4A4A4A]">Pricing</a>
+          <Link to="/about"     className="block py-3 text-sm font-medium text-[#4A4A4A]">About</Link>
+          <Link to="/resources" className="block py-3 text-sm font-medium text-[#4A4A4A]">Resources</Link>
+          <a href="/#pricing" onClick={() => setMenuOpen(false)} className="block py-3 text-sm font-medium text-[#4A4A4A]">Pricing</a>
 
           <div className="pt-3 border-t border-[#E8DDCB] flex flex-col gap-2">
-            <Link to="/login"   className="block py-2 text-sm font-medium text-[#4A4A4A]">Sign in</Link>
+            <Link to="/login" className="block py-3 text-sm font-medium text-[#4A4A4A]">Sign in</Link>
             <Link
               to="/contact"
-              className="block text-center py-2.5 rounded-full bg-[#9A7E58] text-white text-sm font-semibold"
+              className="block text-center py-3 rounded-full bg-[#9A7E58] text-white text-sm font-semibold"
             >
               Book a Call
             </Link>

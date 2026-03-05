@@ -236,7 +236,7 @@ export default function Signup() {
               <div className="inline-flex items-center gap-3 bg-white border border-[#E8DDCB] rounded-full p-1 shadow-sm">
                 <button
                   onClick={() => setAnnual(false)}
-                  className={`px-4 py-1.5 rounded-full text-sm font-medium transition-all ${
+                  className={`px-4 py-2.5 rounded-full text-sm font-medium transition-all ${
                     !annual ? 'bg-[#9A7E58] text-white shadow-sm' : 'text-[#6B6B6B]'
                   }`}
                 >
@@ -244,7 +244,7 @@ export default function Signup() {
                 </button>
                 <button
                   onClick={() => setAnnual(true)}
-                  className={`px-4 py-1.5 rounded-full text-sm font-medium transition-all ${
+                  className={`px-4 py-2.5 rounded-full text-sm font-medium transition-all ${
                     annual ? 'bg-[#9A7E58] text-white shadow-sm' : 'text-[#6B6B6B]'
                   }`}
                 >
@@ -327,13 +327,13 @@ export default function Signup() {
             <div className="flex justify-center gap-3">
               <button
                 onClick={() => setStep('info')}
-                className="px-6 py-2.5 border border-[#D4C4A8] rounded-full text-sm font-medium text-[#4A4A4A] hover:border-[#9A7E58] hover:text-[#9A7E58] transition-colors"
+                className="px-6 py-3 border border-[#D4C4A8] rounded-full text-sm font-medium text-[#4A4A4A] hover:border-[#9A7E58] hover:text-[#9A7E58] transition-colors"
               >
                 Back
               </button>
               <button
                 onClick={() => setStep('payment')}
-                className="px-8 py-2.5 rounded-full bg-[#9A7E58] hover:bg-[#7D6440] text-white text-sm font-semibold transition-colors"
+                className="px-8 py-3 rounded-full bg-[#9A7E58] hover:bg-[#7D6440] text-white text-sm font-semibold transition-colors"
               >
                 Continue with {selectedTier}
               </button>

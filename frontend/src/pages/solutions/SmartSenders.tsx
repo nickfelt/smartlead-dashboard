@@ -73,13 +73,13 @@ export default function SmartSenders() {
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Link
               to="/signup"
-              className="inline-flex items-center justify-center gap-2 px-7 py-3.5 rounded-full bg-[#9A7E58] hover:bg-[#7D6440] text-white font-semibold transition-all hover:scale-105"
+              className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-7 py-3.5 rounded-full bg-[#9A7E58] hover:bg-[#7D6440] text-white font-semibold transition-all hover:scale-105"
             >
               Get started with Smart Senders <ArrowRight size={16} />
             </Link>
             <Link
               to="/contact"
-              className="inline-flex items-center justify-center gap-2 px-7 py-3.5 rounded-full bg-white/10 hover:bg-white/20 border border-white/30 text-white font-semibold transition-all"
+              className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-7 py-3.5 rounded-full bg-white/10 hover:bg-white/20 border border-white/30 text-white font-semibold transition-all"
             >
               Talk to sales
             </Link>
@@ -210,13 +210,13 @@ export default function SmartSenders() {
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
                 <Link
                   to="/signup"
-                  className="inline-flex items-center justify-center gap-2 px-8 py-3.5 rounded-full bg-[#9A7E58] hover:bg-[#B49870] text-white font-semibold transition-all hover:scale-105"
+                  className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-8 py-3.5 rounded-full bg-[#9A7E58] hover:bg-[#B49870] text-white font-semibold transition-all hover:scale-105"
                 >
                   Get started <ArrowRight size={16} />
                 </Link>
                 <Link
                   to="/contact"
-                  className="inline-flex items-center justify-center gap-2 px-8 py-3.5 rounded-full bg-white/10 hover:bg-white/20 border border-white/30 text-white font-semibold transition-all"
+                  className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-8 py-3.5 rounded-full bg-white/10 hover:bg-white/20 border border-white/30 text-white font-semibold transition-all"
                 >
                   Talk to sales
                 </Link>
