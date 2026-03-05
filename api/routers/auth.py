@@ -31,7 +31,7 @@ TIER_PRICES = {
     "enterprise": "price_enterprise_placeholder",
 }
 
-TIER_AMOUNTS = {"starter": 9700, "pro": 19700, "enterprise": 49700}
+TIER_AMOUNTS = {"starter": 14900, "pro": 24900, "enterprise": 49700}
 
 
 # ─── Routes ──────────────────────────────────────────────────────────────────
@@ -138,7 +138,7 @@ async def get_me(user: UserContext = Depends(get_current_user)):
             id=user.user_id,
             email=user.email,
             full_name="Nick Felt" if user.is_admin else "Demo User",
-            company_name="Felt Marketing" if user.is_admin else "Acme Corp",
+            company_name="Bookd" if user.is_admin else "Acme Corp",
             smartlead_client_id=user.client_id,
             stripe_customer_id="cus_mock123",
             subscription_tier=user.subscription_tier,

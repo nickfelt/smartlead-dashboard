@@ -137,12 +137,13 @@ const testimonials = [
 const plans = [
   {
     name: 'Starter',
-    monthlyPrice: 97,
-    annualPrice: 79,
+    monthlyPrice: 149,
+    annualPrice: 119,
     desc: 'Perfect for solo operators and small teams getting started with cold email.',
     features: [
       '5 mailboxes',
-      '10,000 emails / month',
+      '6,000 emails / month',
+      '2,000 active leads',
       '3 active campaigns',
       'Unified inbox',
       'Basic analytics',
@@ -153,14 +154,15 @@ const plans = [
   },
   {
     name: 'Pro',
-    monthlyPrice: 197,
-    annualPrice: 157,
+    monthlyPrice: 249,
+    annualPrice: 199,
     desc: 'For growing agencies running multiple clients and high-volume campaigns.',
     features: [
       'Unlimited mailboxes',
-      '100,000 emails / month',
+      '150,000 emails / month',
+      '30,000 active leads',
       'Unlimited campaigns',
-      'AI copy engine',
+      'AI copy engine (incl. custom first lines)',
       'Client portals',
       'Smart Senders',
       'Advanced analytics',
@@ -177,6 +179,7 @@ const plans = [
     features: [
       'Everything in Pro',
       'Unlimited emails',
+      'Unlimited active leads',
       'White-label branding',
       'Custom domain',
       'SSO / SAML',

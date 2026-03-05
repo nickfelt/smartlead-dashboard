@@ -1,6 +1,6 @@
 import { useState, FormEvent } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
-import { Megaphone, Check, Loader2 } from 'lucide-react'
+import { Check, Loader2 } from 'lucide-react'
 import { useAuth } from '../contexts/AuthContext'
 import { useToast } from '../contexts/ToastContext'
 import api from '../lib/api'
@@ -8,58 +8,76 @@ import type { Session } from '../types'
 
 interface TierCard {
   name: string
-  price: number
+  monthlyPrice: number
+  annualPrice: number
   description: string
   features: string[]
   highlighted: boolean
+  cta: string
 }
 
 const TIERS: TierCard[] = [
   {
     name: 'Starter',
-    price: 97,
-    description: 'Perfect for solo founders and small teams getting started.',
+    monthlyPrice: 149,
+    annualPrice: 119,
+    description: 'Perfect for solo operators and small teams getting started with cold email.',
     features: [
+      '5 mailboxes',
+      '6,000 emails / month',
+      '2,000 active leads',
       '3 active campaigns',
-      '5 email accounts',
-      '1,000 leads/campaign',
-      '500 emails/day',
-      'Master inbox',
+      'Unified inbox',
+      'Basic analytics',
+      'Email support',
     ],
     highlighted: false,
+    cta: 'Start free trial',
   },
   {
     name: 'Pro',
-    price: 197,
-    description: 'For growing teams running multiple outreach campaigns.',
+    monthlyPrice: 249,
+    annualPrice: 199,
+    description: 'For growing agencies running multiple clients and high-volume campaigns.',
     features: [
-      '15 active campaigns',
-      '25 email accounts',
-      '5,000 leads/campaign',
-      '2,000 emails/day',
-      'AI email writer',
-      'Master inbox',
+      'Unlimited mailboxes',
+      '150,000 emails / month',
+      '30,000 active leads',
+      'Unlimited campaigns',
+      'AI copy engine (incl. custom first lines)',
+      'Client portals',
+      'Smart Senders',
+      'Advanced analytics',
+      'Priority support',
     ],
     highlighted: true,
+    cta: 'Start free trial',
   },
   {
     name: 'Enterprise',
-    price: 497,
-    description: 'Unlimited scale for agencies and high-volume senders.',
+    monthlyPrice: 497,
+    annualPrice: 397,
+    description: 'Custom volume, white-label branding, and dedicated success management.',
     features: [
-      'Unlimited campaigns',
-      '100 email accounts',
-      '25,000 leads/campaign',
-      '10,000 emails/day',
-      'AI email writer',
-      'Smart Senders (mailbox purchasing)',
-      'Priority support',
+      'Everything in Pro',
+      'Unlimited emails',
+      'Unlimited active leads',
+      'White-label branding',
+      'Custom domain',
+      'SSO / SAML',
+      'Dedicated CSM',
+      'SLA guarantee',
+      'Custom contracts',
     ],
     highlighted: false,
+    cta: 'Book a call',
   },
 ]
 
 type Step = 'info' | 'plan' | 'payment'
+
+const STEP_LABELS: Record<Step, string> = { info: 'Account', plan: 'Plan', payment: 'Payment' }
+const STEPS: Step[] = ['info', 'plan', 'payment']
 
 export default function Signup() {
   const { setSessionFromSignup } = useAuth()
@@ -67,6 +85,7 @@ export default function Signup() {
   const navigate = useNavigate()
 
   const [selectedTier, setSelectedTier] = useState('Pro')
+  const [annual, setAnnual] = useState(false)
   const [step, setStep] = useState<Step>('info')
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
@@ -99,12 +118,10 @@ export default function Signup() {
       })
 
       if (data.mock && data.session) {
-        // Mock mode: backend returned a session directly — log in immediately
         setSessionFromSignup(data.session)
         showToast(`Welcome, ${formData.fullName}! Your account is ready.`, 'success')
         navigate('/dashboard')
       } else if (data.checkout_url) {
-        // Real mode: redirect to Stripe Checkout
         window.location.href = data.checkout_url
       }
     } catch (err: unknown) {
@@ -118,20 +135,28 @@ export default function Signup() {
     }
   }
 
+  const selectedTierData = TIERS.find((t) => t.name === selectedTier)!
+  const displayPrice = annual ? selectedTierData.annualPrice : selectedTierData.monthlyPrice
+
+  const inputCls =
+    'block w-full rounded-xl border border-[#D4C4A8] bg-white px-4 py-3 text-[#1A1A1A] placeholder-[#9A9A9A] focus:border-[#9A7E58] focus:outline-none focus:ring-2 focus:ring-[#9A7E58]/20 text-sm transition'
+
   return (
-    <div className="min-h-screen bg-gray-50 py-12 px-4">
-      <div className="max-w-4xl mx-auto">
+    <div className="min-h-screen bg-[#F5F0E8] py-12 px-4">
+      <div className="max-w-5xl mx-auto">
+
         {/* Header */}
         <div className="text-center mb-10">
-          <div className="flex justify-center mb-4">
-            <div className="w-12 h-12 bg-brand-600 rounded-xl flex items-center justify-center">
-              <Megaphone size={24} className="text-white" />
+          <Link to="/" className="inline-flex items-center gap-2 mb-6">
+            <div className="w-9 h-9 bg-[#9A7E58] rounded-xl flex items-center justify-center">
+              <span className="text-white font-serif font-bold text-base leading-none">B</span>
             </div>
-          </div>
-          <h1 className="text-3xl font-bold text-gray-900">Create your account</h1>
-          <p className="mt-2 text-gray-600">
+            <span className="font-serif font-semibold text-2xl text-[#1A1A1A] tracking-tight">Bookd</span>
+          </Link>
+          <h1 className="text-2xl font-serif font-semibold text-[#1A1A1A]">Create your account</h1>
+          <p className="mt-2 text-sm text-[#6B6B6B]">
             Already have an account?{' '}
-            <Link to="/login" className="text-brand-600 font-medium hover:text-brand-500">
+            <Link to="/login" className="font-medium text-[#9A7E58] hover:text-[#7D6440] transition-colors">
               Sign in
             </Link>
           </p>
@@ -139,32 +164,39 @@ export default function Signup() {
 
         {/* Steps indicator */}
         <div className="flex items-center justify-center gap-2 mb-10">
-          {(['info', 'plan', 'payment'] as const).map((s, i) => {
-            const stepIndex = ['info', 'plan', 'payment'].indexOf(step)
+          {STEPS.map((s, i) => {
+            const stepIndex = STEPS.indexOf(step)
+            const done = i < stepIndex
+            const active = step === s
             return (
               <div key={s} className="flex items-center gap-2">
-                <div
-                  className={[
-                    'w-8 h-8 rounded-full flex items-center justify-center text-sm font-semibold',
-                    step === s
-                      ? 'bg-brand-600 text-white'
-                      : i < stepIndex
-                      ? 'bg-brand-100 text-brand-600'
-                      : 'bg-gray-200 text-gray-400',
-                  ].join(' ')}
-                >
-                  {i < stepIndex ? <Check size={14} /> : i + 1}
+                <div className="flex items-center gap-1.5">
+                  <div
+                    className={[
+                      'w-7 h-7 rounded-full flex items-center justify-center text-xs font-semibold transition-colors',
+                      active
+                        ? 'bg-[#9A7E58] text-white'
+                        : done
+                        ? 'bg-[#D4C4A8] text-[#7D6440]'
+                        : 'bg-white border border-[#D4C4A8] text-[#9A9A9A]',
+                    ].join(' ')}
+                  >
+                    {done ? <Check size={12} /> : i + 1}
+                  </div>
+                  <span className={`text-xs font-medium ${active ? 'text-[#9A7E58]' : 'text-[#9A9A9A]'}`}>
+                    {STEP_LABELS[s]}
+                  </span>
                 </div>
-                {i < 2 && <div className="w-8 h-px bg-gray-300" />}
+                {i < STEPS.length - 1 && <div className="w-8 h-px bg-[#D4C4A8]" />}
               </div>
             )
           })}
         </div>
 
-        {/* Step 1: Account info */}
+        {/* ── Step 1: Account info ────────────────────────────────────────── */}
         {step === 'info' && (
-          <div className="max-w-md mx-auto bg-white rounded-lg shadow p-8">
-            <h2 className="text-xl font-semibold text-gray-900 mb-6">Your information</h2>
+          <div className="max-w-md mx-auto bg-white rounded-2xl border border-[#E8DDCB] shadow-sm py-8 px-6 sm:px-8">
+            <h2 className="text-lg font-semibold text-[#1A1A1A] mb-6">Your information</h2>
             <form className="space-y-4" onSubmit={handleInfoSubmit}>
               {[
                 { label: 'Full name', key: 'fullName', type: 'text', placeholder: 'Jane Smith' },
@@ -173,21 +205,21 @@ export default function Signup() {
                 { label: 'Password', key: 'password', type: 'password', placeholder: 'Min 8 characters' },
               ].map(({ label, key, type, placeholder }) => (
                 <div key={key}>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">{label}</label>
+                  <label className="block text-sm font-medium text-[#1A1A1A] mb-1.5">{label}</label>
                   <input
                     type={type}
                     required
                     minLength={key === 'password' ? 8 : undefined}
                     value={formData[key as keyof typeof formData]}
                     onChange={(e) => setFormData({ ...formData, [key]: e.target.value })}
-                    className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:border-brand-500 focus:outline-none focus:ring-1 focus:ring-brand-500"
+                    className={inputCls}
                     placeholder={placeholder}
                   />
                 </div>
               ))}
               <button
                 type="submit"
-                className="w-full py-2 px-4 bg-brand-600 hover:bg-brand-700 text-white rounded-md text-sm font-medium transition-colors"
+                className="w-full py-3 px-4 rounded-full bg-[#9A7E58] hover:bg-[#7D6440] text-white text-sm font-semibold transition-colors mt-2"
               >
                 Continue
               </button>
@@ -195,62 +227,113 @@ export default function Signup() {
           </div>
         )}
 
-        {/* Step 2: Plan selection */}
+        {/* ── Step 2: Plan selection ──────────────────────────────────────── */}
         {step === 'plan' && (
           <div>
-            <h2 className="text-xl font-semibold text-gray-900 text-center mb-8">Choose your plan</h2>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-              {TIERS.map((tier) => (
-                <div
-                  key={tier.name}
-                  onClick={() => setSelectedTier(tier.name)}
-                  className={[
-                    'relative bg-white rounded-xl border-2 p-6 cursor-pointer transition-all',
-                    selectedTier === tier.name
-                      ? 'border-brand-600 shadow-lg'
-                      : 'border-gray-200 hover:border-gray-300',
-                    tier.highlighted ? 'ring-2 ring-brand-200' : '',
-                  ].join(' ')}
+            <div className="text-center mb-8">
+              <h2 className="text-lg font-semibold text-[#1A1A1A] mb-4">Choose your plan</h2>
+              {/* Annual toggle */}
+              <div className="inline-flex items-center gap-3 bg-white border border-[#E8DDCB] rounded-full p-1 shadow-sm">
+                <button
+                  onClick={() => setAnnual(false)}
+                  className={`px-4 py-1.5 rounded-full text-sm font-medium transition-all ${
+                    !annual ? 'bg-[#9A7E58] text-white shadow-sm' : 'text-[#6B6B6B]'
+                  }`}
                 >
-                  {tier.highlighted && (
-                    <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-brand-600 text-white text-xs font-semibold px-3 py-1 rounded-full">
-                      Most popular
-                    </div>
-                  )}
-                  <div className="mb-4">
-                    <h3 className="text-lg font-bold text-gray-900">{tier.name}</h3>
-                    <p className="text-gray-500 text-sm mt-1">{tier.description}</p>
-                  </div>
-                  <div className="mb-6">
-                    <span className="text-4xl font-bold text-gray-900">${tier.price}</span>
-                    <span className="text-gray-500">/mo</span>
-                  </div>
-                  <ul className="space-y-2">
-                    {tier.features.map((f) => (
-                      <li key={f} className="flex items-start gap-2 text-sm text-gray-600">
-                        <Check size={16} className="text-brand-600 mt-0.5 flex-shrink-0" />
-                        {f}
-                      </li>
-                    ))}
-                  </ul>
-                  {selectedTier === tier.name && (
-                    <div className="mt-4 pt-4 border-t border-brand-100 text-xs text-brand-600 font-medium text-center">
-                      Selected
-                    </div>
-                  )}
-                </div>
-              ))}
+                  Monthly
+                </button>
+                <button
+                  onClick={() => setAnnual(true)}
+                  className={`px-4 py-1.5 rounded-full text-sm font-medium transition-all ${
+                    annual ? 'bg-[#9A7E58] text-white shadow-sm' : 'text-[#6B6B6B]'
+                  }`}
+                >
+                  Annual
+                  <span className={`ml-1.5 text-xs font-semibold ${annual ? 'text-[#E8C88A]' : 'text-[#9A7E58]'}`}>
+                    Save 20%
+                  </span>
+                </button>
+              </div>
             </div>
-            <div className="flex justify-center gap-4">
+
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-5 mb-8">
+              {TIERS.map((tier) => {
+                const price = annual ? tier.annualPrice : tier.monthlyPrice
+                const isSelected = selectedTier === tier.name
+                return (
+                  <div
+                    key={tier.name}
+                    onClick={() => setSelectedTier(tier.name)}
+                    className={[
+                      'relative rounded-2xl border-2 p-6 cursor-pointer transition-all flex flex-col',
+                      tier.highlighted
+                        ? 'bg-[#3E3018] text-white border-[#9A7E58]'
+                        : 'bg-white border-[#E8DDCB] hover:border-[#C4AE8A]',
+                      isSelected && !tier.highlighted ? 'border-[#9A7E58] shadow-md' : '',
+                    ].join(' ')}
+                  >
+                    {tier.highlighted && (
+                      <div className="absolute -top-3 left-1/2 -translate-x-1/2 px-3 py-1 bg-[#9A7E58] rounded-full text-white text-xs font-semibold whitespace-nowrap">
+                        Most Popular
+                      </div>
+                    )}
+
+                    <div className={`text-xs font-semibold uppercase tracking-wide mb-1 ${tier.highlighted ? 'text-[#E8C88A]' : 'text-[#9A7E58]'}`}>
+                      {tier.name}
+                    </div>
+                    <div className="flex items-baseline gap-1 mb-1">
+                      <span className={`font-serif text-4xl font-bold ${tier.highlighted ? 'text-white' : 'text-[#1A1A1A]'}`}>
+                        ${price}
+                      </span>
+                      <span className={`text-sm ${tier.highlighted ? 'text-white/60' : 'text-[#6B6B6B]'}`}>/mo</span>
+                    </div>
+                    {annual && (
+                      <div className={`text-xs mb-3 ${tier.highlighted ? 'text-[#E8C88A]' : 'text-[#9A7E58]'}`}>
+                        Billed ${price * 12}/year
+                      </div>
+                    )}
+                    <p className={`text-sm mb-5 leading-relaxed ${tier.highlighted ? 'text-white/70' : 'text-[#6B6B6B]'}`}>
+                      {tier.description}
+                    </p>
+
+                    <ul className="space-y-2 flex-1">
+                      {tier.features.map((f) => (
+                        <li key={f} className="flex items-start gap-2 text-sm">
+                          <Check
+                            size={14}
+                            className={`flex-shrink-0 mt-0.5 ${tier.highlighted ? 'text-[#E8C88A]' : 'text-[#9A7E58]'}`}
+                          />
+                          <span className={tier.highlighted ? 'text-white/80' : 'text-[#4A4A4A]'}>{f}</span>
+                        </li>
+                      ))}
+                    </ul>
+
+                    {isSelected && (
+                      <div className={`mt-4 pt-3 border-t text-xs font-semibold text-center ${
+                        tier.highlighted ? 'border-white/20 text-[#E8C88A]' : 'border-[#E8DDCB] text-[#9A7E58]'
+                      }`}>
+                        Selected
+                      </div>
+                    )}
+                  </div>
+                )
+              })}
+            </div>
+
+            <p className="text-center text-sm text-[#6B6B6B] mb-6">
+              All plans include a 14-day free trial. No credit card required.
+            </p>
+
+            <div className="flex justify-center gap-3">
               <button
                 onClick={() => setStep('info')}
-                className="px-6 py-2 border border-gray-300 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors"
+                className="px-6 py-2.5 border border-[#D4C4A8] rounded-full text-sm font-medium text-[#4A4A4A] hover:border-[#9A7E58] hover:text-[#9A7E58] transition-colors"
               >
                 Back
               </button>
               <button
                 onClick={() => setStep('payment')}
-                className="px-8 py-2 bg-brand-600 hover:bg-brand-700 text-white rounded-md text-sm font-medium transition-colors"
+                className="px-8 py-2.5 rounded-full bg-[#9A7E58] hover:bg-[#7D6440] text-white text-sm font-semibold transition-colors"
               >
                 Continue with {selectedTier}
               </button>
@@ -258,50 +341,56 @@ export default function Signup() {
           </div>
         )}
 
-        {/* Step 3: Payment */}
+        {/* ── Step 3: Payment ─────────────────────────────────────────────── */}
         {step === 'payment' && (
-          <div className="max-w-md mx-auto bg-white rounded-lg shadow p-8">
-            <h2 className="text-xl font-semibold text-gray-900 mb-1">Complete your purchase</h2>
-            <p className="text-sm text-gray-500 mb-6">
-              {selectedTier} plan — ${TIERS.find((t) => t.name === selectedTier)?.price}/month
+          <div className="max-w-md mx-auto bg-white rounded-2xl border border-[#E8DDCB] shadow-sm py-8 px-6 sm:px-8">
+            <h2 className="text-lg font-semibold text-[#1A1A1A] mb-1">Complete your purchase</h2>
+            <p className="text-sm text-[#6B6B6B] mb-6">
+              {selectedTier} plan — ${displayPrice}/month{annual ? ' (billed annually)' : ''}
             </p>
 
             {error && (
-              <div className="mb-4 rounded-md bg-red-50 px-4 py-3 text-sm text-red-700">{error}</div>
+              <div className="mb-4 rounded-xl bg-red-50 border border-red-200 px-4 py-3 text-sm text-red-700">
+                {error}
+              </div>
             )}
 
             {/* Order summary */}
-            <div className="bg-gray-50 rounded-lg p-4 mb-6 text-sm space-y-2">
+            <div className="bg-[#F5F0E8] rounded-xl p-4 mb-6 text-sm space-y-2">
               <div className="flex justify-between">
-                <span className="text-gray-600">Plan</span>
-                <span className="font-medium">{selectedTier}</span>
+                <span className="text-[#6B6B6B]">Plan</span>
+                <span className="font-medium text-[#1A1A1A]">{selectedTier}</span>
               </div>
               <div className="flex justify-between">
-                <span className="text-gray-600">Account</span>
-                <span className="font-medium">{formData.email}</span>
+                <span className="text-[#6B6B6B]">Billing</span>
+                <span className="font-medium text-[#1A1A1A]">{annual ? 'Annual' : 'Monthly'}</span>
               </div>
-              <div className="flex justify-between pt-2 border-t border-gray-200 font-semibold">
+              <div className="flex justify-between">
+                <span className="text-[#6B6B6B]">Account</span>
+                <span className="font-medium text-[#1A1A1A] truncate max-w-[180px]">{formData.email}</span>
+              </div>
+              <div className="flex justify-between pt-2 border-t border-[#E8DDCB] font-semibold text-[#1A1A1A]">
                 <span>Total</span>
-                <span>${TIERS.find((t) => t.name === selectedTier)?.price}/mo</span>
+                <span>${displayPrice}/mo</span>
               </div>
             </div>
 
-            <div className="bg-blue-50 border border-blue-200 rounded-md p-3 mb-6 text-xs text-blue-700">
-              <strong>Dev mode:</strong> Clicking below calls the API and logs you in immediately. In production this redirects to Stripe Checkout.
+            <div className="bg-[#F5F0E8] rounded-xl p-3 mb-6 text-xs text-[#6B6B6B]">
+              <strong className="text-[#1A1A1A]">Dev mode:</strong> Clicking below calls the API and logs you in immediately. In production this redirects to Stripe Checkout.
             </div>
 
             <div className="flex gap-3">
               <button
                 onClick={() => setStep('plan')}
                 disabled={loading}
-                className="flex-1 py-2 border border-gray-300 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-50 disabled:opacity-50"
+                className="flex-1 py-3 border border-[#D4C4A8] rounded-full text-sm font-medium text-[#4A4A4A] hover:border-[#9A7E58] hover:text-[#9A7E58] disabled:opacity-50 transition-colors"
               >
                 Back
               </button>
               <button
                 onClick={handleCheckout}
                 disabled={loading}
-                className="flex-1 flex items-center justify-center gap-2 py-2 bg-brand-600 hover:bg-brand-700 text-white rounded-md text-sm font-medium disabled:opacity-60 transition-colors"
+                className="flex-1 flex items-center justify-center gap-2 py-3 rounded-full bg-[#9A7E58] hover:bg-[#7D6440] text-white text-sm font-semibold disabled:opacity-60 transition-colors"
               >
                 {loading && <Loader2 size={14} className="animate-spin" />}
                 {loading ? 'Creating account...' : 'Complete signup'}
