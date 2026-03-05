@@ -20,6 +20,9 @@ class Settings(BaseSettings):
     # Encryption (AES key for client API keys at rest)
     encryption_key: str = ""
 
+    # Frontend origin(s) for CORS in production (comma-separated if multiple)
+    frontend_url: str = "https://app.feltmarketing.com"
+
     # Dev flags
     use_mock: bool = True
 

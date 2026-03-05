@@ -13,7 +13,8 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from mangum import Mangum
 
-from api.routers import auth, campaigns, inbox, email_accounts, admin, webhooks, ai, settings
+from api.routers import auth, campaigns, inbox, email_accounts, admin, webhooks, ai, settings, dashboard
+from api.config import get_settings
 
 app = FastAPI(
     title="Smartlead Dashboard API",
@@ -23,10 +24,15 @@ app = FastAPI(
     openapi_url="/api/openapi.json",
 )
 
-# CORS — tighten origin list in production
+# CORS — allow all origins in mock/dev, restrict to configured domain in production
+_settings = get_settings()
+_cors_origins = ["*"] if _settings.use_mock else [
+    o.strip() for o in _settings.frontend_url.split(",") if o.strip()
+] or ["*"]
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=_cors_origins,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -41,6 +47,7 @@ app.include_router(admin.router, prefix="/api")
 app.include_router(webhooks.router, prefix="/api")
 app.include_router(ai.router, prefix="/api")
 app.include_router(settings.router, prefix="/api")
+app.include_router(dashboard.router, prefix="/api")
 
 
 @app.get("/api/health")
