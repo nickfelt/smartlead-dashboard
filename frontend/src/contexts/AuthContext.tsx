@@ -1,7 +1,9 @@
-import { createContext, useContext, useState, useEffect, ReactNode } from 'react'
+import { createContext, useContext, useState, useEffect, useCallback, ReactNode } from 'react'
 import type { User, Session, SubscriptionTier } from '../types'
+import { supabase } from '../lib/supabase'
+import api from '../lib/api'
 
-// ─── Mock user for dev (USE_MOCK=true) ───────────────────────────────────────
+// ─── Mock users ───────────────────────────────────────────────────────────────
 
 const MOCK_USER: User = {
   id: 'mock-user-001',
@@ -28,7 +30,12 @@ const MOCK_ADMIN_USER: User = {
   is_admin: true,
 }
 
-// ─── Context shape ────────────────────────────────────────────────────────────
+// ─── Toggle ───────────────────────────────────────────────────────────────────
+// Set to false when VITE_SUPABASE_URL + VITE_SUPABASE_ANON_KEY are configured.
+
+const USE_MOCK = true
+
+// ─── Context ──────────────────────────────────────────────────────────────────
 
 interface AuthContextValue {
   user: User | null
@@ -39,54 +46,98 @@ interface AuthContextValue {
   login: (email: string, password: string) => Promise<void>
   logout: () => Promise<void>
   refreshUser: () => Promise<void>
+  setSessionFromSignup: (session: Session) => void
 }
 
 const AuthContext = createContext<AuthContextValue | null>(null)
 
 // ─── Provider ─────────────────────────────────────────────────────────────────
 
-const USE_MOCK = true // flip to false when wiring up real Supabase
-
 export function AuthProvider({ children }: { children: ReactNode }) {
-  const [user, setUser] = useState<User | null>(null)
+  const [user, setUser]       = useState<User | null>(null)
   const [session, setSession] = useState<Session | null>(null)
   const [loading, setLoading] = useState(true)
 
+  // ── Mock mode bootstrap ──────────────────────────────────────────────────────
   useEffect(() => {
-    if (USE_MOCK) {
-      // Load persisted mock session from localStorage
-      const stored = localStorage.getItem('mock_session')
-      if (stored) {
-        try {
-          const parsed = JSON.parse(stored) as Session
+    if (!USE_MOCK) return
+
+    const stored = localStorage.getItem('mock_session')
+    if (stored) {
+      try {
+        const parsed = JSON.parse(stored) as Session
+        // Check token not expired
+        if (parsed.expires_at > Date.now()) {
           setSession(parsed)
           setUser(parsed.user)
-        } catch {
+        } else {
           localStorage.removeItem('mock_session')
         }
+      } catch {
+        localStorage.removeItem('mock_session')
       }
-      setLoading(false)
-      return
     }
-    // Real Supabase auth will go here in Phase 2
     setLoading(false)
   }, [])
 
-  const login = async (email: string, _password: string) => {
+  // ── Real Supabase bootstrap ──────────────────────────────────────────────────
+  useEffect(() => {
+    if (USE_MOCK) return
+
+    supabase.auth.getSession().then(({ data: { session: sb } }) => {
+      if (sb) _applySupabaseSession(sb)
+      setLoading(false)
+    })
+
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, sb) => {
+      if (sb) _applySupabaseSession(sb)
+      else { setUser(null); setSession(null) }
+    })
+
+    return () => subscription.unsubscribe()
+  }, [])
+
+  const _applySupabaseSession = async (sb: { access_token: string; refresh_token: string; expires_at?: number; user: { id: string; email?: string } }) => {
+    const appSession: Session = {
+      access_token: sb.access_token,
+      refresh_token: sb.refresh_token,
+      expires_at: (sb.expires_at ?? 0) * 1000,
+      user: null as unknown as User, // filled below
+    }
+    setSession(appSession)
+    localStorage.setItem('supabase_session', JSON.stringify(appSession))
+
+    // Fetch full profile from our API
+    try {
+      const { data } = await api.get<User>('/auth/me')
+      setUser(data)
+      setSession({ ...appSession, user: data })
+    } catch {
+      setUser(null)
+    }
+  }
+
+  // ── Actions ──────────────────────────────────────────────────────────────────
+
+  const login = async (email: string, password: string) => {
     if (USE_MOCK) {
-      const mockUser = email.includes('admin') ? MOCK_ADMIN_USER : MOCK_USER
-      const mockSession: Session = {
+      const mockUser = email.toLowerCase().includes('admin') ? MOCK_ADMIN_USER : MOCK_USER
+      const mockUser2 = { ...mockUser, email }
+      const s: Session = {
         access_token: 'mock-token-' + Date.now(),
         refresh_token: 'mock-refresh-' + Date.now(),
         expires_at: Date.now() + 3600 * 1000,
-        user: mockUser,
+        user: mockUser2,
       }
-      localStorage.setItem('mock_session', JSON.stringify(mockSession))
-      setSession(mockSession)
-      setUser(mockUser)
+      localStorage.setItem('mock_session', JSON.stringify(s))
+      setSession(s)
+      setUser(mockUser2)
       return
     }
-    // Real Supabase login goes here in Phase 2
+
+    const { error } = await supabase.auth.signInWithPassword({ email, password })
+    if (error) throw new Error(error.message)
+    // onAuthStateChange fires and calls _applySupabaseSession
   }
 
   const logout = async () => {
@@ -96,12 +147,27 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       setUser(null)
       return
     }
-    // Real Supabase logout goes here in Phase 2
+    await supabase.auth.signOut()
+    localStorage.removeItem('supabase_session')
+    setSession(null)
+    setUser(null)
   }
 
-  const refreshUser = async () => {
+  const refreshUser = useCallback(async () => {
     if (USE_MOCK) return
-    // Real Supabase refresh goes here in Phase 2
+    try {
+      const { data } = await api.get<User>('/auth/me')
+      setUser(data)
+    } catch {
+      // silent
+    }
+  }, [])
+
+  /** Called by the Signup page after a successful mock/real payment. */
+  const setSessionFromSignup = (s: Session) => {
+    localStorage.setItem('mock_session', JSON.stringify(s))
+    setSession(s)
+    setUser(s.user)
   }
 
   return (
@@ -115,6 +181,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         login,
         logout,
         refreshUser,
+        setSessionFromSignup,
       }}
     >
       {children}
