@@ -1,10 +1,11 @@
-import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
+import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import { AuthProvider } from './contexts/AuthContext'
 import { ToastProvider } from './contexts/ToastContext'
 import ProtectedRoute from './components/ProtectedRoute'
 import ErrorBoundary from './components/ErrorBoundary'
 import Layout from './components/Layout'
 
+import Landing from './pages/Landing'
 import Login from './pages/Login'
 import Signup from './pages/Signup'
 import NotFound from './pages/NotFound'
@@ -29,7 +30,7 @@ export default function App() {
               {/* Public */}
               <Route path="/login"  element={<Login />} />
               <Route path="/signup" element={<Signup />} />
-              <Route path="/"       element={<Navigate to="/dashboard" replace />} />
+              <Route path="/"       element={<Landing />} />
 
               {/* Protected client */}
               <Route element={<ProtectedRoute />}>
